@@ -482,3 +482,48 @@ def test_contributors():
 
     # No contributors
     assert views.contributors({}) == []
+
+
+def test_dissertation():
+    """Test formatting of dissertation text."""
+    # No dissertation
+    assert not views.dissertation({})
+
+    # Only degree property
+    assert views.dissertation(
+        {'dissertation': {
+            'degree': 'Thèse de doctorat'
+        }}) == 'Thèse de doctorat'
+
+    #  With jury notes
+    assert views.dissertation({
+        'dissertation': {
+            'degree': 'Thèse de doctorat',
+            'jury_note': ['Note 1', 'Note 2']
+        }
+    }) == 'Thèse de doctorat (jury note: Note 1 ; Note 2)'
+
+    # With granting institution
+    assert views.dissertation(
+        {
+            'dissertation': {
+                'degree': 'Thèse de doctorat',
+                'jury_note': ['Note 1', 'Note 2'],
+                'grantingInstitution': 'Università della Svizzera italiana'
+            }
+        }
+    ) == 'Thèse de doctorat: Università della Svizzera italiana (jury note: ' \
+         'Note 1 ; Note 2)'
+
+    # With date
+    assert views.dissertation(
+        {
+            'dissertation': {
+                'degree': 'Thèse de doctorat',
+                'jury_note': ['Note 1', 'Note 2'],
+                'grantingInstitution': 'Università della Svizzera italiana',
+                'date': '2010-01-01'
+            }
+        }
+    ) == 'Thèse de doctorat: Università della Svizzera italiana, 01.01.2010 ' \
+         '(jury note: Note 1 ; Note 2)'
